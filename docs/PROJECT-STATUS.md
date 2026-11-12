@@ -23,7 +23,14 @@ mesure avec l'USB-6009.
 
 ## Vérifications et distribution
 
-La suite comporte **14 tests passants** : quatre sur le tampon circulaire,
+Mise à jour du 15 octobre 2026 : **20 tests passants** après ajout des contrôles
+du différentiel (détection NI, configuration du worker et réglages de l'interface).
+Le mode par défaut est désormais différentiel, avec migration de l'ancien
+`Default` mémorisé ; les modes explicites restent conservés. La constante du
+pilote utilisée est `TerminalConfiguration.DIFF`. Le câblage aux bornes 5, 6, 7
+avec cavalier 6–7 a été confirmé par l'utilisateur. Ces changements sont inclus dans la version 0.1.1.
+
+Lors de la préparation 0.1.0, la suite comportait **14 tests passants** : quatre sur le tampon circulaire,
 quatre sur la configuration, deux sur les enregistrements et quatre sur
 l'acquisition. Les tests d'acquisition vérifient la continuité et l'arrêt de la
 simulation, la configuration NI et l'utilisation de la fréquence effective avec
@@ -56,6 +63,12 @@ accidentelle de bibliothèques externes au projet. Le workflow GitHub Windows
 exécute également les tests, construit et contrôle le binaire.
 
 ## Travaux restant à valider
+
+Une [note NI USB-6009](NI-USB-6009.md), ajoutée le 15 octobre 2026, consigne
+le câblage confirmé (AI1 borne 5, retour borne 7, cavalier 6–7), la cible
+`Dev1/ai1` à 4 000 éch/s et les possibilités différentiel 14 bits ±5 V ou
+RSE 13 bits ±10 V. **Le mode et la gamme de l'ancien Datalogger restent à
+vérifier** ; le câblage seul ne permet pas de les déduire.
 
 1. **Étendre la validation Windows** : les 14 tests et les contrôles des sources
    et de l'exécutable ont réussi sous Windows 11 x64. Tester également un poste

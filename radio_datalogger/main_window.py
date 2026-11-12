@@ -268,8 +268,14 @@ class MainWindow(QMainWindow):
             self._settings.value("auto_y_scale", True, type=bool)
         )
         self._vertical_autoscale_changed(self.auto_y_checkbox.isChecked())
-        mode = str(self._settings.value("terminal_mode", "DEFAULT"))
+        # Remplace aussi l'ancien choix implicite du pilote au prochain lancement.
+        # Un mode explicite déjà mémorisé (RSE, etc.) reste un choix utilisateur.
+        mode = str(self._settings.value("terminal_mode", "DIFFERENTIAL"))
+        if mode == "DEFAULT":
+            mode = "DIFFERENTIAL"
         mode_index = self.terminal_combo.findData(mode)
+        if mode_index < 0:
+            mode_index = self.terminal_combo.findData("DIFFERENTIAL")
         self.terminal_combo.setCurrentIndex(max(0, mode_index))
 
     def _save_settings(self) -> None:
@@ -382,6 +388,8 @@ class MainWindow(QMainWindow):
         for key in supported_modes:
             self.terminal_combo.addItem(TERMINAL_MODE_LABELS[key], key)
         selected_index = self.terminal_combo.findData(selected_mode)
+        if selected_index < 0:
+            selected_index = self.terminal_combo.findData("DIFFERENTIAL")
         self.terminal_combo.setCurrentIndex(max(0, selected_index))
         self.terminal_combo.blockSignals(False)
 

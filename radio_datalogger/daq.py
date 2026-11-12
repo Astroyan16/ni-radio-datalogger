@@ -52,9 +52,10 @@ def discover_devices() -> tuple[list[DeviceInfo], str | None]:
             for channel in physical_channels:
                 try:
                     supported = tuple(
-                        mode.name
+                        "DIFFERENTIAL" if mode.name == "DIFF" else mode.name
                         for mode in channel.ai_term_cfgs
-                        if mode.name in TERMINAL_MODE_LABELS and mode.name != "DEFAULT"
+                        if mode.name == "DIFF"
+                        or (mode.name in TERMINAL_MODE_LABELS and mode.name != "DEFAULT")
                     )
                     terminal_modes_by_channel[channel.name] = ("DEFAULT", *supported)
                 except Exception:
@@ -93,7 +94,7 @@ def _terminal_configuration(mode: str) -> Any:
     if TerminalConfiguration is None:
         raise RuntimeError("NI-DAQmx n'est pas installé.")
     try:
-        return getattr(TerminalConfiguration, mode)
+        return getattr(TerminalConfiguration, "DIFF" if mode == "DIFFERENTIAL" else mode)
     except AttributeError as exc:
         raise ValueError(f"Mode de connexion inconnu : {mode}") from exc
 

@@ -12,9 +12,10 @@ try {
     if ($LASTEXITCODE -ne 0) { throw "Dépendances incohérentes." }
     & $Python -m pytest
     if ($LASTEXITCODE -ne 0) { throw "Échec des tests." }
-    & $Python -m PyInstaller --noconfirm --clean ni-radio-datalogger.spec
+    $workPath = Join-Path ([System.IO.Path]::GetTempPath()) ("ni-radio-build-" + [guid]::NewGuid())
+    & $Python -m PyInstaller --noconfirm --clean --workpath $workPath ni-radio-datalogger.spec
     if ($LASTEXITCODE -ne 0) { throw "Échec de PyInstaller." }
-    $exePath = Join-Path $projectRoot "dist\NI-Radio-Datalogger-0.1.0-windows-x64.exe"
+    $exePath = Join-Path $projectRoot "dist\NI-Radio-Datalogger-0.1.1-windows-x64.exe"
     $smokePath = Join-Path $projectRoot "artifacts\smoke-exe"
     $previousPlatform = $env:QT_QPA_PLATFORM
     try {

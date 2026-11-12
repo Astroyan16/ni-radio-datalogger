@@ -6,17 +6,17 @@ de radioastronomie. Elle mesure la sortie unique de l'électronique
 d'interférométrie associée à deux antennes : les antennes ne sont pas
 échantillonnées séparément.
 
-La version **0.1.0** constitue une première version distribuable. Le parcours en
+La version **0.1.1** active le mode différentiel par défaut. Le parcours en
 simulation permet d'utiliser l'application sans matériel. La validation sur un
 véritable USB-6009 reste à effectuer ; le détail de l'avancement est dans
 [l'état du projet](docs/PROJECT-STATUS.md).
 
 ## Démarrer sous Windows
 
-1. Ouvrir la [release v0.1.0](https://github.com/Astroyan16/ni-radio-datalogger/releases/tag/v0.1.0).
-2. Télécharger et extraire `NI-Radio-Datalogger-0.1.0-windows-x64.zip`, qui
+1. Ouvrir la [release v0.1.1](https://github.com/Astroyan16/ni-radio-datalogger/releases/tag/v0.1.1).
+2. Télécharger et extraire `NI-Radio-Datalogger-0.1.1-windows-x64.zip`, qui
    contient l'exécutable, la documentation et les notices des dépendances.
-3. Lancer `NI-Radio-Datalogger-0.1.0-windows-x64.exe`.
+3. Lancer `NI-Radio-Datalogger-0.1.1-windows-x64.exe`.
 4. Choisir la source **Simulation**, puis **Démarrer l'acquisition** pour un
    premier essai.
 
@@ -27,7 +27,7 @@ ne remplace pas ce pilote.
 
 La distribution cible Windows x64 ; le poste de préparation utilise Windows 11
 x64. Windows 10 et le fonctionnement matériel n'ont pas encore été validés.
-Les [notes de release](docs/RELEASE-0.1.0.md) précisent les contrôles et les limites.
+Les [notes de release](docs/RELEASE-0.1.1.md) précisent les contrôles et les limites.
 
 ## Fonctionnalités
 
@@ -35,6 +35,8 @@ Les [notes de release](docs/RELEASE-0.1.0.md) précisent les contrôles et les l
 - Présélection de `ai1` lorsqu'elle existe et choix d'une autre entrée analogique.
 - Choix du mode de connexion : Default, différentiel, RSE, NRSE ou
   pseudo-différentiel, selon les possibilités déclarées par le périphérique.
+  Le différentiel est présélectionné ; l'ancien réglage mémorisé `Default`
+  devient également différentiel au lancement. Les choix explicites sont conservés.
 - Réglage de la fréquence d'échantillonnage et de la plage de tension ; contrôle
   de la fréquence maximale lorsqu'elle est disponible auprès de NI-DAQmx.
 - Courbe temps réel avec une fenêtre de taille réglable, un tampon d'affichage
@@ -50,8 +52,10 @@ Les [notes de release](docs/RELEASE-0.1.0.md) précisent les contrôles et les l
 
 1. Installer NI-DAQmx, brancher le périphérique et attendre sa détection.
 2. Vérifier l'entrée choisie, le câblage et la plage de tension.
-3. Choisir le mode de connexion correspondant au câblage physique. `Default`
-   laisse NI-DAQmx choisir ; sélectionner explicitement `RSE` pour un câblage RSE.
+3. Pour le TP sur USB-6009, conserver **Différentiel (DIFF)** sur `ai1` :
+   signal + borne 5, retour borne 7, cavalier 6–7 (AI5 = AI1−).
+   Voir le [câblage confirmé](docs/NI-USB-6009.md). Pour un autre montage,
+   choisir le mode correspondant ; `Default` laisse NI-DAQmx choisir.
 4. Régler la fréquence et le nombre de points affichés, puis démarrer.
 5. Activer l'enregistrement CSV pour conserver les nouveaux échantillons au fil
    de l'eau. Arrêter cet enregistrement ne coupe pas l'acquisition.
@@ -93,7 +97,7 @@ de l'ordinateur.
 ## Exécuter depuis les sources
 
 Python 3.11 ou supérieur est déclaré dans le projet ; la distribution Windows
-0.1.0 est préparée avec Python 3.12 x64. Depuis PowerShell, dans le dépôt :
+0.1.1 est préparée avec Python 3.12 x64. Depuis PowerShell, dans le dépôt :
 
 ```powershell
 py -3.12 -m venv .venv
@@ -135,9 +139,9 @@ powershell -ExecutionPolicy Bypass -File scripts/build_windows.ps1 -Python .\.ve
 
 Les fichiers de distribution sont placés dans `dist/` :
 
-- `NI-Radio-Datalogger-0.1.0-windows-x64.exe` : exécutable autonome construit avec
+- `NI-Radio-Datalogger-0.1.1-windows-x64.exe` : exécutable autonome construit avec
   PyInstaller en mode fichier unique ;
-- `NI-Radio-Datalogger-0.1.0-windows-x64.zip` : distribution portable avec
+- `NI-Radio-Datalogger-0.1.1-windows-x64.zip` : distribution portable avec
   documentation et notices ;
 - `THIRD_PARTY_NOTICES.txt` : inventaire et notices des composants ;
 - `SHA256SUMS.txt` : empreintes de contrôle des fichiers distribués.
@@ -146,7 +150,7 @@ Pour lancer le contrôle du binaire et récupérer son code de sortie dans
 PowerShell :
 
 ```powershell
-$verification = Start-Process -FilePath .\dist\NI-Radio-Datalogger-0.1.0-windows-x64.exe -ArgumentList '--smoke-test', 'build\smoke-exe' -WindowStyle Hidden -Wait -PassThru
+$verification = Start-Process -FilePath .\dist\NI-Radio-Datalogger-0.1.1-windows-x64.exe -ArgumentList '--smoke-test', 'build\smoke-exe' -WindowStyle Hidden -Wait -PassThru
 if ($verification.ExitCode -ne 0) { throw "Échec du test de l'exécutable : $($verification.ExitCode)" }
 ```
 
@@ -156,8 +160,9 @@ garantie de reproduction octet pour octet du binaire.
 
 ## Documents du projet
 
+- [NI USB-6009 : câblage du TP, acquisition à 4 000 éch/s et modes DIFF/RSE](docs/NI-USB-6009.md)
 - [État du projet et validations restantes](docs/PROJECT-STATUS.md)
-- [Notes de la version 0.1.0](docs/RELEASE-0.1.0.md)
+- [Notes de la version 0.1.1](docs/RELEASE-0.1.1.md)
 - [Historique des versions](CHANGELOG.md)
 - [Dépôt GitHub](https://github.com/Astroyan16/ni-radio-datalogger)
 

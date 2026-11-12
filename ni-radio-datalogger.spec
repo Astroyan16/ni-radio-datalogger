@@ -36,7 +36,7 @@ exe = EXE(
     analysis.binaries,
     analysis.datas,
     [],
-    name="NI-Radio-Datalogger-0.1.0-windows-x64",
+    name="NI-Radio-Datalogger-0.1.1-windows-x64",
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,

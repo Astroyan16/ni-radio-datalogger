@@ -1,5 +1,14 @@
 # Historique des versions
 
+## 0.1.1 — 2026-11-12
+
+- Mode différentiel présélectionné, y compris à la place de l'ancien réglage
+  automatique mémorisé ; les modes explicites enregistrés restent conservés.
+- Correction de la détection et de la transmission du différentiel à NI-DAQmx :
+  la constante Python est `TerminalConfiguration.DIFF`.
+- Câblage du TP confirmé : AI1 borne 5, retour borne 7, cavalier 6–7.
+- Tests du mode différentiel, de sa détection et des réglages de l'interface.
+
 ## 0.1.0 — 2026-09-07
 
 Première version préparée pour une distribution Windows x64.
