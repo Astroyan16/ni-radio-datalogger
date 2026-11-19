@@ -1,22 +1,20 @@
-# NI Radio Datalogger
+# NI Datalogger
 
 Application de bureau pour enregistrer et visualiser la tension d'une entrée
-analogique National Instruments, notamment celle d'un **NI USB-6009**, dans un TP
-de radioastronomie. Elle mesure la sortie unique de l'électronique
-d'interférométrie associée à deux antennes : les antennes ne sont pas
-échantillonnées séparément.
+analogique d'un périphérique compatible **NI-DAQmx**. La source, la voie, le mode
+de connexion, la fréquence et la plage de tension sont configurables.
 
-La version **0.1.1** active le mode différentiel par défaut. Le parcours en
+La version **0.1.2** propose une interface générique et une plage initiale de 0 à 5 V. Le parcours en
 simulation permet d'utiliser l'application sans matériel. La validation sur un
 véritable USB-6009 reste à effectuer ; le détail de l'avancement est dans
 [l'état du projet](docs/PROJECT-STATUS.md).
 
 ## Démarrer sous Windows
 
-1. Ouvrir la [release v0.1.1](https://github.com/Astroyan16/ni-radio-datalogger/releases/tag/v0.1.1).
-2. Télécharger et extraire `NI-Radio-Datalogger-0.1.1-windows-x64.zip`, qui
+1. Ouvrir la [release v0.1.2](https://github.com/Astroyan16/ni-radio-datalogger/releases/tag/v0.1.2).
+2. Télécharger et extraire `NI-Radio-Datalogger-0.1.2-windows-x64.zip`, qui
    contient l'exécutable, la documentation et les notices des dépendances.
-3. Lancer `NI-Radio-Datalogger-0.1.1-windows-x64.exe`.
+3. Lancer `NI-Radio-Datalogger-0.1.2-windows-x64.exe`.
 4. Choisir la source **Simulation**, puis **Démarrer l'acquisition** pour un
    premier essai.
 
@@ -27,12 +25,13 @@ ne remplace pas ce pilote.
 
 La distribution cible Windows x64 ; le poste de préparation utilise Windows 11
 x64. Windows 10 et le fonctionnement matériel n'ont pas encore été validés.
-Les [notes de release](docs/RELEASE-0.1.1.md) précisent les contrôles et les limites.
+Les [notes de release](docs/RELEASE-0.1.2.md) précisent les contrôles et les limites.
 
 ## Fonctionnalités
 
 - Détection périodique des périphériques NI-DAQmx, avec actualisation manuelle.
-- Présélection de `ai1` lorsqu'elle existe et choix d'une autre entrée analogique.
+- Sélection d’une entrée analogique ; la voie mémorisée est restaurée si disponible,
+  sinon `ai1` est proposée si elle permet le différentiel, ou la première voie disponible.
 - Choix du mode de connexion : Default, différentiel, RSE, NRSE ou
   pseudo-différentiel, selon les possibilités déclarées par le périphérique.
   Le différentiel est présélectionné ; l'ancien réglage mémorisé `Default`
@@ -52,10 +51,9 @@ Les [notes de release](docs/RELEASE-0.1.1.md) précisent les contrôles et les l
 
 1. Installer NI-DAQmx, brancher le périphérique et attendre sa détection.
 2. Vérifier l'entrée choisie, le câblage et la plage de tension.
-3. Pour le TP sur USB-6009, conserver **Différentiel (DIFF)** sur `ai1` :
-   signal + borne 5, retour borne 7, cavalier 6–7 (AI5 = AI1−).
-   Voir le [câblage confirmé](docs/NI-USB-6009.md). Pour un autre montage,
-   choisir le mode correspondant ; `Default` laisse NI-DAQmx choisir.
+3. Choisir le mode de connexion adapté au câblage et au périphérique.
+   `Default` laisse NI-DAQmx choisir ; le différentiel est présélectionné
+   lorsqu'il est disponible.
 4. Régler la fréquence et le nombre de points affichés, puis démarrer.
 5. Activer l'enregistrement CSV pour conserver les nouveaux échantillons au fil
    de l'eau. Arrêter cet enregistrement ne coupe pas l'acquisition.
@@ -68,11 +66,10 @@ l'application.** Ces actions suppriment sa copie temporaire. La taille du tampon
 d'affichage limite les points en mémoire pour la courbe ; elle ne limite pas
 l'espace disque utilisé par la session complète.
 
-Le signal d'entrée doit être une **sortie basse fréquence déjà combinée,
-corrélée ou détectée** par l'électronique associée aux deux antennes. L'application
-ne réalise ni cette combinaison ni une acquisition radiofréquence directe.
-Respecter les limites électriques et le câblage indiqués dans le manuel du
-périphérique.
+Au premier démarrage, la plage demandée est **0 à 5 V**. Les réglages
+enregistrés sont restaurés aux lancements suivants. NI-DAQmx choisit la gamme
+matérielle adaptée aux limites demandées, selon les possibilités du périphérique.
+Respecter les limites électriques et le câblage indiqués dans son manuel.
 
 ## Format des données
 
@@ -80,8 +77,11 @@ Le CSV utilise la virgule comme séparateur et le point comme séparateur décim
 Des lignes de métadonnées préfixées par `#` précèdent les colonnes :
 
 ```text
-sample_index,elapsed_s,interferometer_voltage_v
+sample_index,elapsed_s,voltage_v
 ```
+
+La colonne de tension des nouveaux exports s'appelle `voltage_v` ; les versions
+0.1.0 et 0.1.1 utilisaient `interferometer_voltage_v`.
 
 Les métadonnées décrivent notamment la source, l'entrée, le mode de connexion,
 la fréquence effective, la plage de tension et `acquisition_started_utc`.
@@ -97,7 +97,7 @@ de l'ordinateur.
 ## Exécuter depuis les sources
 
 Python 3.11 ou supérieur est déclaré dans le projet ; la distribution Windows
-0.1.1 est préparée avec Python 3.12 x64. Depuis PowerShell, dans le dépôt :
+0.1.2 est préparée avec Python 3.12 x64. Depuis PowerShell, dans le dépôt :
 
 ```powershell
 py -3.12 -m venv .venv
@@ -139,9 +139,9 @@ powershell -ExecutionPolicy Bypass -File scripts/build_windows.ps1 -Python .\.ve
 
 Les fichiers de distribution sont placés dans `dist/` :
 
-- `NI-Radio-Datalogger-0.1.1-windows-x64.exe` : exécutable autonome construit avec
+- `NI-Radio-Datalogger-0.1.2-windows-x64.exe` : exécutable autonome construit avec
   PyInstaller en mode fichier unique ;
-- `NI-Radio-Datalogger-0.1.1-windows-x64.zip` : distribution portable avec
+- `NI-Radio-Datalogger-0.1.2-windows-x64.zip` : distribution portable avec
   documentation et notices ;
 - `THIRD_PARTY_NOTICES.txt` : inventaire et notices des composants ;
 - `SHA256SUMS.txt` : empreintes de contrôle des fichiers distribués.
@@ -150,7 +150,7 @@ Pour lancer le contrôle du binaire et récupérer son code de sortie dans
 PowerShell :
 
 ```powershell
-$verification = Start-Process -FilePath .\dist\NI-Radio-Datalogger-0.1.1-windows-x64.exe -ArgumentList '--smoke-test', 'build\smoke-exe' -WindowStyle Hidden -Wait -PassThru
+$verification = Start-Process -FilePath .\dist\NI-Radio-Datalogger-0.1.2-windows-x64.exe -ArgumentList '--smoke-test', 'build\smoke-exe' -WindowStyle Hidden -Wait -PassThru
 if ($verification.ExitCode -ne 0) { throw "Échec du test de l'exécutable : $($verification.ExitCode)" }
 ```
 
@@ -160,9 +160,8 @@ garantie de reproduction octet pour octet du binaire.
 
 ## Documents du projet
 
-- [NI USB-6009 : câblage du TP, acquisition à 4 000 éch/s et modes DIFF/RSE](docs/NI-USB-6009.md)
 - [État du projet et validations restantes](docs/PROJECT-STATUS.md)
-- [Notes de la version 0.1.1](docs/RELEASE-0.1.1.md)
+- [Notes de la version 0.1.2](docs/RELEASE-0.1.2.md)
 - [Historique des versions](CHANGELOG.md)
 - [Dépôt GitHub](https://github.com/Astroyan16/ni-radio-datalogger)
 

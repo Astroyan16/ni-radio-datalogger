@@ -38,7 +38,7 @@ from . import __version__
 class MainWindow(QMainWindow):
     def __init__(self) -> None:
         super().__init__()
-        self.setWindowTitle(f"NI Radio Datalogger {__version__}")
+        self.setWindowTitle(f"NI Datalogger {__version__}")
         self.resize(1320, 790)
         self.setMinimumSize(1050, 680)
 
@@ -71,7 +71,7 @@ class MainWindow(QMainWindow):
 
         header = QHBoxLayout()
         titles = QVBoxLayout()
-        title = QLabel("NI Radio Datalogger")
+        title = QLabel("NI Datalogger")
         title.setObjectName("title")
         subtitle = QLabel("Acquisition analogique · visualisation temps réel · export CSV")
         subtitle.setObjectName("subtitle")
@@ -95,7 +95,7 @@ class MainWindow(QMainWindow):
         side.setSpacing(12)
         body.addWidget(side_panel)
 
-        connection_card, connection_layout = self._card("SORTIE INTERFÉROMÈTRE")
+        connection_card, connection_layout = self._card("ENTRÉE ANALOGIQUE")
         self.device_combo = QComboBox()
         self.device_combo.currentIndexChanged.connect(self._device_changed)
         refresh_button = QPushButton("Actualiser")
@@ -113,12 +113,6 @@ class MainWindow(QMainWindow):
         for key, label in TERMINAL_MODE_LABELS.items():
             self.terminal_combo.addItem(label, key)
         connection_layout.addRow("Connexion", self.terminal_combo)
-        source_note = QLabel(
-            "Une voie unique mesure le signal déjà combiné par l'interféromètre des deux antennes."
-        )
-        source_note.setObjectName("muted")
-        source_note.setWordWrap(True)
-        connection_layout.addRow(source_note)
         side.addWidget(connection_card)
 
         acquisition_card, acquisition_layout = self._card("ACQUISITION")
@@ -141,12 +135,12 @@ class MainWindow(QMainWindow):
         self.voltage_min_spin = QDoubleSpinBox()
         self.voltage_min_spin.setRange(-1000.0, 999.0)
         self.voltage_min_spin.setDecimals(2)
-        self.voltage_min_spin.setValue(-10.0)
+        self.voltage_min_spin.setValue(0.0)
         self.voltage_min_spin.setSuffix(" V")
         self.voltage_max_spin = QDoubleSpinBox()
         self.voltage_max_spin.setRange(-999.0, 1000.0)
         self.voltage_max_spin.setDecimals(2)
-        self.voltage_max_spin.setValue(10.0)
+        self.voltage_max_spin.setValue(5.0)
         self.voltage_max_spin.setSuffix(" V")
         range_row.addWidget(self.voltage_min_spin)
         range_row.addWidget(self.voltage_max_spin)
@@ -262,8 +256,8 @@ class MainWindow(QMainWindow):
     def _restore_settings(self) -> None:
         self.rate_spin.setValue(float(self._settings.value("sample_rate", 1000.0)))
         self.display_samples_spin.setValue(int(self._settings.value("display_samples", 10000)))
-        self.voltage_min_spin.setValue(float(self._settings.value("voltage_min", -10.0)))
-        self.voltage_max_spin.setValue(float(self._settings.value("voltage_max", 10.0)))
+        self.voltage_min_spin.setValue(float(self._settings.value("voltage_min", 0.0)))
+        self.voltage_max_spin.setValue(float(self._settings.value("voltage_max", 5.0)))
         self.auto_y_checkbox.setChecked(
             self._settings.value("auto_y_scale", True, type=bool)
         )
@@ -338,7 +332,7 @@ class MainWindow(QMainWindow):
         self.channel_combo.blockSignals(True)
         self.channel_combo.clear()
         if device_name == SIMULATION_DEVICE or device_name is None:
-            self.channel_combo.addItem("Sortie interféromètre simulée", "")
+            self.channel_combo.addItem("Signal simulé", "")
             self.channel_combo.setEnabled(False)
             self.rate_spin.setMaximum(1_000_000.0)
             self.channel_combo.blockSignals(False)
@@ -360,6 +354,9 @@ class MainWindow(QMainWindow):
                     index
                     for index, channel in enumerate(device.channels)
                     if channel.lower().endswith("/ai1")
+                    and "DIFFERENTIAL" in device.terminal_modes_by_channel.get(
+                        channel, tuple(TERMINAL_MODE_LABELS)
+                    )
                 ),
                 0,
             )

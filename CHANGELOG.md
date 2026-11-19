@@ -1,5 +1,13 @@
 # Historique des versions
 
+## 0.1.2 — 2026-11-19
+
+- Plage initiale de 0 à 5 V, avec conservation des réglages mémorisés.
+- Interface générique « NI Datalogger », sans consignes propres à la manipulation radio.
+- Préférence pour `ai1` si elle permet le différentiel en l'absence de voie
+  mémorisée, sinon sélection de la première entrée disponible.
+- Colonne de tension des nouveaux CSV renommée `voltage_v`.
+
 ## 0.1.1 — 2026-11-12
 
 - Mode différentiel présélectionné, y compris à la place de l'ancien réglage

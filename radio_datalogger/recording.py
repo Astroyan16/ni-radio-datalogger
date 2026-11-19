@@ -88,7 +88,7 @@ class AcquisitionSession:
                 f"# voltage_range_v,{self.config.voltage_min:g},{self.config.voltage_max:g}\n"
             )
             writer = csv.writer(output)
-            writer.writerow(("sample_index", "elapsed_s", "interferometer_voltage_v"))
+            writer.writerow(("sample_index", "elapsed_s", "voltage_v"))
             sample_index = 0
             with self._temporary_path.open("rb") as source:
                 while block := source.read(65_536 * 8):
@@ -148,7 +148,7 @@ class CsvRecorder:
             output.write(f"# sample_rate_hz,{actual_rate:.12g}\n")
             output.write(f"# voltage_range_v,{config.voltage_min:g},{config.voltage_max:g}\n")
             writer = csv.writer(output)
-            writer.writerow(("sample_index", "elapsed_s", "interferometer_voltage_v"))
+            writer.writerow(("sample_index", "elapsed_s", "voltage_v"))
         except Exception:
             output.close()
             raise

@@ -23,6 +23,11 @@ mesure avec l'USB-6009.
 
 ## Vérifications et distribution
 
+Version 0.1.2 du 19 novembre 2026 : interface générique « NI Datalogger »,
+plage initiale 0–5 V, préférence pour ai1 si disponible en différentiel et
+conservation des réglages mémorisés. Les nouveaux CSV utilisent `voltage_v`.
+La suite comporte désormais 24 tests. La qualification matérielle reste à faire.
+
 Mise à jour du 15 octobre 2026 : **20 tests passants** après ajout des contrôles
 du différentiel (détection NI, configuration du worker et réglages de l'interface).
 Le mode par défaut est désormais différentiel, avec migration de l'ancien

@@ -34,8 +34,8 @@ class AcquisitionConfig:
     terminal_mode: str
     sample_rate: float
     display_samples: int
-    voltage_min: float = -10.0
-    voltage_max: float = 10.0
+    voltage_min: float = 0.0
+    voltage_max: float = 5.0
 
     @property
     def is_simulation(self) -> bool:
@@ -43,7 +43,7 @@ class AcquisitionConfig:
 
     def validate(self, maximum_rate: float | None = None) -> None:
         if not self.is_simulation and not self.physical_channel:
-            raise ValueError("Sélectionnez l'entrée analogique de la sortie interféromètre.")
+            raise ValueError("Sélectionnez une entrée analogique.")
         if not isfinite(self.sample_rate) or self.sample_rate <= 0:
             raise ValueError("La fréquence d'échantillonnage doit être positive.")
         if maximum_rate is not None and self.sample_rate > maximum_rate:

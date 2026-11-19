@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ni-radio-datalogger"
-version = "0.1.1"
-description = "Interface graphique d'acquisition analogique NI USB-6009"
+version = "0.1.2"
+description = "Enregistreur et visualiseur de tension analogique NI-DAQmx"
 requires-python = ">=3.11"
 dependencies = [
     "numpy>=2.0,<3",

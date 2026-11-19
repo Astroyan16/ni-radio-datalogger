@@ -16,7 +16,7 @@ from radio_datalogger import __version__
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="NI Radio Datalogger")
+    parser = argparse.ArgumentParser(description="NI Datalogger")
     parser.add_argument("--version", action="version", version=__version__)
     parser.add_argument(
         "--smoke-test", type=Path, metavar="DOSSIER",
@@ -25,6 +25,7 @@ def main() -> int:
     args, qt_args = parser.parse_known_args()
     app = QApplication([sys.argv[0], *qt_args])
     app.setApplicationName("NI Radio Datalogger")
+    app.setApplicationDisplayName("NI Datalogger")
     app.setApplicationVersion(__version__)
     app.setOrganizationName("Observatoire de Paris")
     app.setStyle("Fusion")

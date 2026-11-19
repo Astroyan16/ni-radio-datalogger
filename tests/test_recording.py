@@ -27,7 +27,7 @@ def test_csv_records_metadata_and_samples(tmp_path) -> None:
 
     contents = destination.read_text(encoding="utf-8")
     assert "# acquisition_started_utc,2026-01-02T00:00:00+00:00" in contents
-    assert "sample_index,elapsed_s,interferometer_voltage_v" in contents
+    assert "sample_index,elapsed_s,voltage_v" in contents
     assert "10,0.010000000,1.250000000" in contents
     assert "11,0.011000000,-0.500000000" in contents
 
@@ -53,6 +53,7 @@ def test_completed_session_can_be_exported_after_stop(tmp_path) -> None:
     contents = destination.read_text(encoding="utf-8")
 
     assert session.samples_written == 2
+    assert "sample_index,elapsed_s,voltage_v" in contents
     assert "0,0.000000000,1.250000000" in contents
     assert "1,0.001000000,-0.500000000" in contents
     session.discard()

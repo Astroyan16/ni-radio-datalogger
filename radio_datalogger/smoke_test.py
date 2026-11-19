@@ -27,7 +27,7 @@ def _read_csv(path: Path) -> list[dict[str, str]]:
     assert rows, f"CSV vide : {path.name}"
     indices = np.array([int(row["sample_index"]) for row in rows])
     times = np.array([float(row["elapsed_s"]) for row in rows])
-    values = np.array([float(row["interferometer_voltage_v"]) for row in rows])
+    values = np.array([float(row["voltage_v"]) for row in rows])
     assert np.all(np.diff(indices) == 1), "Indices CSV discontinus"
     assert np.allclose(times, indices / 1000, rtol=0, atol=1e-9)
     assert np.all(np.isfinite(values)), "Tensions CSV non finies"
@@ -88,6 +88,11 @@ def run_smoke_test(app: QApplication, output_dir: Path) -> int:
             ui.QMessageBox.warning = unexpected_dialog
             sys.excepthook = exception_hook
             window = ui.MainWindow()
+            assert window.voltage_min_spin.value() == 0.0
+            assert window.voltage_max_spin.value() == 5.0
+            assert window.terminal_combo.currentData() == "DIFFERENTIAL"
+            assert window.windowTitle() == f"NI Datalogger {__version__}"
+            report["checks"].append("generic_interface_and_default_configuration")
             window.setAttribute(Qt.WidgetAttribute.WA_DontShowOnScreen, True)
             window.show()
 

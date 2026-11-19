@@ -13,7 +13,7 @@ import zipfile
 
 ROOT = Path(__file__).resolve().parents[1]
 DIST = ROOT / "dist"
-NAME = "NI-Radio-Datalogger-0.1.1-windows-x64"
+NAME = "NI-Radio-Datalogger-0.1.2-windows-x64"
 
 
 def main() -> None:
@@ -24,7 +24,7 @@ def main() -> None:
     staging.mkdir(parents=True, exist_ok=True)
     notices = staging / "THIRD_PARTY_NOTICES.txt"
     lines = [
-        "NI Radio Datalogger 0.1.1 — composants de l'environnement de compilation",
+        "NI Radio Datalogger 0.1.2 — composants de l'environnement de compilation",
         f"Python {sys.version.split()[0]} — {platform.platform()}",
         "Les notices de licence disponibles sont incluses dans licenses/.",
         "Le pilote système NI-DAQmx doit être installé séparément.",
@@ -63,8 +63,7 @@ def main() -> None:
         for relative in (
             "README.md",
             "CHANGELOG.md",
-            "docs/RELEASE-0.1.1.md",
-            "docs/NI-USB-6009.md",
+            "docs/RELEASE-0.1.2.md",
             "docs/PROJECT-STATUS.md",
             "requirements-build.lock.txt",
         ):

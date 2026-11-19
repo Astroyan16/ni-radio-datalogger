@@ -57,7 +57,7 @@ def test_hardware_configuration_uses_actual_rate_without_real_device(monkeypatch
     task.ai_channels.add_ai_voltage_chan.assert_called_once_with(
         "DevTest/ai1",
         terminal_config=(daq.TerminalConfiguration.DIFF if mode == "DIFFERENTIAL" else daq.TerminalConfiguration.RSE),
-        min_val=-10, max_val=10
+        min_val=0, max_val=5
     )
     task.timing.cfg_samp_clk_timing.assert_called_once_with(
         rate=1000, sample_mode=daq.AcquisitionType.CONTINUOUS, samps_per_chan=1000

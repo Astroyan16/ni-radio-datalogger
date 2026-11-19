@@ -1,5 +1,11 @@
 # NI USB-6009 — câblage et acquisition du TP
 
+Note historique propre à ce montage. Depuis le 19 novembre 2026, l'interface
+est générique : elle propose initialement 0 à 5 V et `ai1` si elle permet le
+différentiel, sinon la première voie disponible, si aucun réglage n'est mémorisé.
+Les indications ci-dessous décrivent le TP,
+pas les réglages imposés par le logiciel.
+
 Le câblage ci-dessous est **confirmé par l'utilisateur le 15 octobre 2026**, sans inspection du
 montage. Les caractéristiques du matériel ont été recoupées avec les sources NI
 en fin de document. La configuration historique du Datalogger reste à vérifier.
